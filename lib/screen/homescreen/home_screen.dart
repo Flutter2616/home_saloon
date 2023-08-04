@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:home_saloon/screen/cart_screen/cart_modal.dart';
 import 'package:home_saloon/screen/homescreen/home_controller.dart';
 import 'package:home_saloon/screen/homescreen/service_modal.dart';
 import 'package:home_saloon/utils/firebase_data.dart';
@@ -74,10 +75,14 @@ class _HomescreenState extends State<Homescreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Row(
                         children: [
-                          CircleAvatar(
-                              radius: 15.sp,
-                              backgroundImage:
-                                  AssetImage("assets/intro/bg1.png")),
+                          InkWell(onTap: () {
+                            Get.toNamed("setting");
+                          },
+                            child: CircleAvatar(
+                                radius: 15.sp,
+                                backgroundImage:
+                                    AssetImage("assets/intro/bg1.png")),
+                          ),
                           const SizedBox(width: 5),
                           Text(
                             "Surat ,india",
@@ -176,7 +181,7 @@ class _HomescreenState extends State<Homescreen> {
                               physics: BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                return service(controller.packagelist[index]);
+                                return service(controller.packagelist[index],null);
                               },
                               itemCount: controller.packagelist.length,
                             ),
@@ -189,7 +194,7 @@ class _HomescreenState extends State<Homescreen> {
                               physics: BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                return service(controller.offerlist[index]);
+                                return service(controller.offerlist[index],controller.offerlist[index].offer);
                               },
                               itemCount: controller.offerlist.length,
                             ),
@@ -211,7 +216,7 @@ class _HomescreenState extends State<Homescreen> {
     );
   }
 
-  Padding service(Servicemodal modal) {
+  Padding service(Servicemodal modal,String? offer) {
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: Column(
@@ -220,13 +225,35 @@ class _HomescreenState extends State<Homescreen> {
           Container(
               width: 80.w,
               height: 18.h,
+              padding: EdgeInsets.all(10),
+              alignment: Alignment.bottomLeft,
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: NetworkImage("${modal.img}"),
                       fit: BoxFit.cover,
                       opacity: 100),
                   borderRadius: BorderRadius.circular(10.sp),
-                  color: Colors.black)),
+                  color: Colors.black),
+              child: offer != null
+                  ? Container(height: 4.h,
+                      padding: EdgeInsets.all(5),
+                      // alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.sp)),
+                      child: Row(mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset("assets/icon/offer.png"),
+                          const SizedBox(width: 5),
+                          Text("${offer}",
+                              style: TextStyle(
+                                  color: Color(0xff6E4CFE),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10.sp)),
+                        ],
+                      ),
+                    )
+                  : Container()),
           const SizedBox(height: 5),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +293,17 @@ class _HomescreenState extends State<Homescreen> {
               ),
               InkWell(
                 onTap: () {
-                  Firebasedata.data.add_Cartdata(modal, user['uid']);
+                  Cartmodal cart = Cartmodal(
+                      price: modal.price,
+                      desc: modal.desc,
+                      time: modal.time,
+                      gender: modal.gender,
+                      name: modal.name,
+                      qty: 1,
+                      offer: modal.offer,
+                      img: modal.img,
+                      type: modal.type);
+                  Firebasedata.data.add_Cartdata(cart, user['uid']);
                 },
                 child: Container(
                   height: 3.5.h,

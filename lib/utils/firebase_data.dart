@@ -23,7 +23,7 @@ class Firebasedata {
     }
   }
 
-  void add_Cartdata(Servicemodal modal, String uid) {
+  void add_Cartdata(Cartmodal modal, String uid) {
     fire.collection("addcart").doc("${uid}").collection("mycart").add({
       "detail": modal.name,
       "img":
@@ -33,6 +33,7 @@ class Firebasedata {
       "time": modal.time,
       "description": modal.desc,
       "offer": modal.offer,
+      "qty": modal.qty,
       "gender": modal.gender
     });
   }
@@ -67,8 +68,12 @@ class Firebasedata {
     });
   }
 
-  void delete_cart(String id)
-  {
-    fire.collection("addcart").doc("${user['uid']}").collection("mycart").doc("${id}").delete();
+  void delete_cart(String id) {
+    fire
+        .collection("addcart")
+        .doc("${user['uid']}")
+        .collection("mycart")
+        .doc("${id}")
+        .delete();
   }
 }

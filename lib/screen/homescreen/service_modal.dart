@@ -1,7 +1,7 @@
 class Servicemodal
 {
   String ?name,time,type,desc,gender,img,offer;
-  int? price;
+  num? price;
 
   Servicemodal(
       {this.name,

@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 
 import 'firebase_options.dart';
 import 'screen/cart_screen/cartscreen.dart';
+import 'screen/setting/setting_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ Future<void> main() async {
     Sizer(
       builder: (context, orientation, deviceType) =>GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        // initialRoute: "type",
+        initialRoute: "setting",
         routes: {
           '/':(context) => Splashscreen(),
           'intro':(context) => IntroScreen(),
@@ -30,6 +31,7 @@ Future<void> main() async {
           'home':(context) => Homescreen(),
           'type':(context) => Typescreen(),
           'cart':(context) => Cartscreen(),
+          'setting':(context) => Settingscreen(),
         },
       ),
     ),

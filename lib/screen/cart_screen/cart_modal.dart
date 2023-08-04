@@ -1,7 +1,7 @@
 class Cartmodal
 {
   String? name,time,type,desc,gender,img,offer,servicetime,status,id;
-  int? price,qty;
+  num? price,qty;
 
   Cartmodal(
       {this.name,
