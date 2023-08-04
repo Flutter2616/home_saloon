@@ -267,10 +267,7 @@ class _CartscreenState extends State<Cartscreen> {
                                                         children: [
                                                           InkWell(
                                                             onTap: () {
-                                                              if (cart
-                                                                      .cartlist[
-                                                                          e.key]
-                                                                      .qty! <
+                                                              if (cart.cartlist[e.key].qty! <
                                                                   2) {
                                                                 Firebasedata
                                                                     .data

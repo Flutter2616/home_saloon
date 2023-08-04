@@ -118,13 +118,15 @@ class _TypescreenState extends State<Typescreen> {
                             color: Colors.grey.shade200,
                             thickness: 2),
                         const SizedBox(height: 15),
-                        Row(
-                          children: [
-                            offer("50% off", "use code:FREE50"),
-                            const SizedBox(width: 10),
-                            offer(
-                                "60% off on Debit Card", "No coupon required"),
-                          ],
+                        SingleChildScrollView(scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              offer("50% off", "use code:FREE50"),
+                              const SizedBox(width: 10),
+                              offer(
+                                  "60% off on Debit Card", "No coupon required"),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 25),
                         Divider(

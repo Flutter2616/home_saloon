@@ -76,7 +76,7 @@ class _HomescreenState extends State<Homescreen> {
                       child: Row(
                         children: [
                           InkWell(onTap: () {
-                            Get.toNamed("setting");
+                            Get.toNamed("dash");
                           },
                             child: CircleAvatar(
                                 radius: 15.sp,

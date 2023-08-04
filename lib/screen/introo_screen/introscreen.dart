@@ -78,7 +78,9 @@ class _IntroScreenState extends State<IntroScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      button("Login", Colors.transparent, Colors.white),
+                      InkWell(onTap: () {
+                        Get.offAllNamed("login");
+                      },child: button("Login", Colors.transparent, Colors.white)),
                       InkWell(onTap: () {
                         if(controller.pageindex.value<controller.introdetail.length-1)
                           {
