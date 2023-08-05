@@ -25,7 +25,7 @@ Future<void> main() async {
     Sizer(
       builder: (context, orientation, deviceType) =>GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: "payment",
+        // initialRoute: "payment",
         routes: {
           '/':(context) => Splashscreen(),
           'intro':(context) => IntroScreen(),

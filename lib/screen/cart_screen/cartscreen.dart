@@ -6,6 +6,7 @@ import 'package:home_saloon/screen/cart_screen/cart_modal.dart';
 import 'package:home_saloon/screen/homescreen/home_controller.dart';
 import 'package:home_saloon/screen/homescreen/service_modal.dart';
 import 'package:home_saloon/utils/firebase_data.dart';
+import 'package:home_saloon/utils/razorpay_class.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sizer/sizer.dart';
 
@@ -690,6 +691,7 @@ class _CartscreenState extends State<Cartscreen> {
                                         );
                                         Firebasedata.data.update_Cart(modal);
                                       }
+                                      PaymentHelper.payment.setPayment(cart.total_order_price.value.toDouble());
                                     },
                                     child: Text(
                                       "Order",
