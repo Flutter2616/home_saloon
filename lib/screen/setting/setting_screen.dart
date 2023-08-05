@@ -91,7 +91,7 @@ class _SettingscreenState extends State<Settingscreen> {
         InkWell(onTap: () {
           Get.toNamed("payment");
         },
-          child: tile(Icon(Icons.payment, color: Colors.black, size: 18.sp), "Payment",
+          child: tile(Icon(Icons.payment, color: Colors.black, size: 18.sp), "spPayment",
               "Payment methods, Transaction History"),
         ),
         tile(Icon(Icons.note_alt_outlined, color: Colors.black, size: 18.sp),
