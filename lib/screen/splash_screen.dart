@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:home_saloon/screen/map_screen/map_controller.dart';
 import 'package:home_saloon/utils/firebase_helper.dart';
 import 'package:sizer/sizer.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -15,15 +18,18 @@ class Splashscreen extends StatefulWidget {
 
 class _SplashscreenState extends State<Splashscreen> {
   bool status=false;
+  Mapcontroller map=Get.put(Mapcontroller());
   @override
   void initState() {
     super.initState();
     status=Firebasehelper.helper.checkuser();
     print(status);
   }
+
+
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 4), () {
+    Timer(Duration(seconds: 4), () async {
       status==false?Get.offAllNamed('intro'):Get.offAllNamed('home');
     });
     return SafeArea(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:home_saloon/screen/address_screen/address_modal.dart';
 import 'package:home_saloon/screen/cart_screen/cart_modal.dart';
 import 'package:home_saloon/screen/homescreen/service_modal.dart';
 
@@ -75,5 +76,29 @@ class Firebasedata {
         .collection("mycart")
         .doc("${id}")
         .delete();
+  }
+
+  //======================================address fire store=========================
+  void add_Address(String uid,Addressmodal modal) {
+    fire.collection("user").doc("${uid}").collection("myaddress").add({
+      "first name":modal.first,
+      "last name":modal.last,
+      "phone number":modal.number,
+      "house flat no":modal.house,
+      "pincode":modal.pincode,
+      "residency name":modal.residency,
+      "city":modal.city,
+      "state":modal.state,
+    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> read_address()
+  {
+    return fire.collection("user").doc("${user['uid']}").collection("myaddress").snapshots();
+  }
+
+  void delete_Address(String id)
+  {
+    fire.collection("user").doc("${user['uid']}").collection("myaddress").doc("${id}").delete();
   }
 }

@@ -42,9 +42,11 @@ class _SettingscreenState extends State<Settingscreen> {
                       await pickimage.pickImage(source: ImageSource.gallery);
                   setting.path.value = image!.path;
                 },
-                child: CircleAvatar(
-                    radius: 18.sp,
-                    backgroundImage: FileImage(File("${setting.path}"))),
+                child: Obx(
+                  () => CircleAvatar(
+                      radius: 18.sp,
+                      backgroundImage: FileImage(File("${setting.path.value}"))),
+                ),
               ),
               const SizedBox(width: 8),
               Column(
@@ -91,11 +93,15 @@ class _SettingscreenState extends State<Settingscreen> {
         InkWell(onTap: () {
           Get.toNamed("payment");
         },
-          child: tile(Icon(Icons.payment, color: Colors.black, size: 18.sp), "spPayment",
+          child: tile(Icon(Icons.payment, color: Colors.black, size: 18.sp), "Payment",
               "Payment methods, Transaction History"),
         ),
-        tile(Icon(Icons.note_alt_outlined, color: Colors.black, size: 18.sp),
-            "Manage Address", ""),
+        InkWell(onTap: () {
+          Get.toNamed("showaddress");
+        },
+          child: tile(Icon(Icons.note_alt_outlined, color: Colors.black, size: 18.sp),
+              "Manage Address", ""),
+        ),
         tile(
             Icon(Icons.notifications_outlined,
                 color: Colors.black, size: 18.sp),
