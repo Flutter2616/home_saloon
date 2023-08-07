@@ -691,7 +691,7 @@ class _CartscreenState extends State<Cartscreen> {
                                         );
                                         Firebasedata.data.update_Cart(modal);
                                       }
-                                      Get.toNamed("showaddress",arguments: {"status":"select","index":null});
+                                      Get.toNamed("showaddress",arguments: "select");
                                       // PaymentHelper.payment.setPayment(cart.total_order_price.value.toDouble());
                                     },
                                     child: Text(

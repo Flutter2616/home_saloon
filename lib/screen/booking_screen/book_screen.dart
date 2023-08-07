@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
 class Bookscreen extends StatefulWidget {
@@ -15,7 +16,9 @@ class _BookscreenState extends State<Bookscreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(leading: InkWell(onTap: () {
+          Get.back();
+        },child: Icon(Icons.arrow_back,color: Colors.black,size: 15.sp)),
           backgroundColor: Colors.white,
           elevation: 1,
           bottom: TabBar(

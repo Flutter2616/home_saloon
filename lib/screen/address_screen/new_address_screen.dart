@@ -23,25 +23,34 @@ class _NewaddressState extends State<Newaddress> {
   TextEditingController txtcity = TextEditingController();
   TextEditingController txtstate = TextEditingController();
   TextEditingController txtphone = TextEditingController();
-  Addresscontroller address=Get.put(Addresscontroller());
+  Addresscontroller address = Get.put(Addresscontroller());
 
   GlobalKey<FormState> key = GlobalKey();
-  Map m1=Get.arguments;
+  Map m1 = Get.arguments;
+
   @override
   void initState() {
     super.initState();
-    if(m1['status']==1)
-      {
-        txtfirstname=TextEditingController(text: address.addresslist[m1['index']].first);
-        txtlastname=TextEditingController(text: address.addresslist[m1['index']].last);
-        txtcity=TextEditingController(text: address.addresslist[m1['index']].city);
-        txtstate=TextEditingController(text: address.addresslist[m1['index']].state);
-        txtresidencyname=TextEditingController(text: address.addresslist[m1['index']].residency);
-        txtpincode=TextEditingController(text: "${address.addresslist[m1['index']].pincode}");
-        txtphone=TextEditingController(text:"${address.addresslist[m1['index']].number}");
-        txtflatno=TextEditingController(text: address.addresslist[m1['index']].house);
-      }
+    if (m1['status'] == 1) {
+      txtfirstname =
+          TextEditingController(text: address.addresslist[m1['index']].first);
+      txtlastname =
+          TextEditingController(text: address.addresslist[m1['index']].last);
+      txtcity =
+          TextEditingController(text: address.addresslist[m1['index']].city);
+      txtstate =
+          TextEditingController(text: address.addresslist[m1['index']].state);
+      txtresidencyname = TextEditingController(
+          text: address.addresslist[m1['index']].residency);
+      txtpincode = TextEditingController(
+          text: "${address.addresslist[m1['index']].pincode}");
+      txtphone = TextEditingController(
+          text: "${address.addresslist[m1['index']].number}");
+      txtflatno =
+          TextEditingController(text: address.addresslist[m1['index']].house);
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -59,27 +68,46 @@ class _NewaddressState extends State<Newaddress> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(onTap: () {
-                        Get.back();
-                      },child: Icon(Icons.close, size: 15.sp, color: Colors.black)),
+                      InkWell(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Icon(Icons.close,
+                              size: 15.sp, color: Colors.black)),
                       InkWell(
                         onTap: () {
                           if (key.currentState!.validate()) {
-                            Addressmodal modal = Addressmodal(
-                                number: int.parse(txtphone.text),
-                                city: txtcity.text,
-                                first: txtfirstname.text,
-                                last: txtlastname.text,
-                                house: txtflatno.text,
-                                pincode: int.parse(txtpincode.text),
-                                residency: txtresidencyname.text,
-                                state: txtstate.text);
-                            Firebasedata.data.add_Address("${user['uid']}", modal);
-                            Get.offAllNamed("showaddress");
+                            if (m1['status'] == 0) {
+                              Addressmodal modal = Addressmodal(
+                                  number: int.parse(txtphone.text),
+                                  city: txtcity.text,
+                                  first: txtfirstname.text,
+                                  last: txtlastname.text,
+                                  house: txtflatno.text,
+                                  pincode: int.parse(txtpincode.text),
+                                  residency: txtresidencyname.text,
+                                  state: txtstate.text);
+                              Firebasedata.data
+                                  .add_Address("${user['uid']}", modal);
+                            } else {
+                              Addressmodal modal = Addressmodal(
+                                  number: int.parse(txtphone.text),
+                                  city: txtcity.text,
+                                  id: address.addresslist[m1['index']].id,
+                                  first: txtfirstname.text,
+                                  last: txtlastname.text,
+                                  house: txtflatno.text,
+                                  pincode: int.parse(txtpincode.text),
+                                  residency: txtresidencyname.text,
+                                  state: txtstate.text);
+                              Firebasedata.data
+                                  .update_Address(modal, "${user['uid']}");
+                            }
+                            Get.back();
                           }
                         },
                         child: Text(
-                          "Add",
+                          m1['status'] == 1 ? "Edit" : "Add",
                           style: TextStyle(
                               color: Color(0xff6E4CFE), fontSize: 12.sp),
                         ),

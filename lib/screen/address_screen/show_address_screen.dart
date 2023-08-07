@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_saloon/screen/address_screen/address_controller.dart';
 import 'package:home_saloon/screen/address_screen/address_modal.dart';
+import 'package:home_saloon/screen/cart_screen/cart_controller.dart';
 import 'package:home_saloon/utils/firebase_data.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sizer/sizer.dart';
@@ -16,6 +17,8 @@ class ShowAddress extends StatefulWidget {
 
 class _ShowAddressState extends State<ShowAddress> {
   Addresscontroller address = Get.put(Addresscontroller());
+  Cartcontroller cart = Get.put(Cartcontroller());
+  String status = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +117,17 @@ class _ShowAddressState extends State<ShowAddress> {
         children: [
           ListTile(
             minLeadingWidth: 5.w,
+            trailing: Visibility(visible: status=="select"?true:false,
+              child: Obx(
+                () => Radio(activeColor: Color(0xff6E4CFE),
+                  value: "${address.addresslist[index].id}",
+                  groupValue: cart.selectaddress.value,
+                  onChanged: (value) {
+                    cart.selectaddress.value = value!;
+                  },
+                ),
+              ),
+            ),
             leading: CircleAvatar(
                 backgroundColor: Colors.grey.shade400,
                 radius: 10.sp,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -8,8 +10,10 @@ import 'package:home_saloon/screen/cart_screen/cart_modal.dart';
 import 'package:home_saloon/screen/homescreen/home_controller.dart';
 import 'package:home_saloon/screen/homescreen/service_modal.dart';
 import 'package:home_saloon/screen/map_screen/map_controller.dart';
+import 'package:home_saloon/screen/homescreen/setting_controller.dart';
 import 'package:home_saloon/utils/firebase_data.dart';
 import 'package:home_saloon/utils/firebase_helper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sizer/sizer.dart';
 
@@ -27,6 +31,8 @@ class _HomescreenState extends State<Homescreen> {
   Homecontroller controller = Get.put(Homecontroller());
   Mapcontroller map = Get.put(Mapcontroller());
   Cartcontroller cart = Get.put(Cartcontroller());
+  GlobalKey<ScaffoldState> key = GlobalKey();
+  Settingcontroller setting = Get.put(Settingcontroller());
 
 //6E4CFE
   @override
@@ -36,9 +42,7 @@ class _HomescreenState extends State<Homescreen> {
     getlocation();
   }
 
-  Future<void> getlocation()
-  async {
-
+  Future<void> getlocation() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
@@ -46,17 +50,227 @@ class _HomescreenState extends State<Homescreen> {
     map.log.value = position.longitude;
     map.placemark.clear();
     List<Placemark> placemark =
-    await placemarkFromCoordinates(
-        map.lat.value, map.log.value);
+        await placemarkFromCoordinates(map.lat.value, map.log.value);
     map.placemark.value = placemark;
     map.place.value = map.placemark[0];
 
     print("===================== ${map.place}");
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: Drawer(
+          width: 65.w,
+          child: Column(
+            children: [
+              // const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.center,
+                height: 9.h,
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                        bottom:
+                            BorderSide(color: Colors.grey.shade200, width: 2))),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        ImagePicker pickimage = ImagePicker();
+                        XFile? image = await pickimage.pickImage(
+                            source: ImageSource.gallery);
+                        setting.path.value = image!.path;
+                      },
+                      child: Obx(
+                        () => CircleAvatar(
+                            radius: 15.sp,
+                            backgroundImage:
+                                FileImage(File("${setting.path.value}"))),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Column(
+                      children: [
+                        Text(
+                          "${user['name'] ?? 'Name'}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "${user['email']}",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                    Spacer(),
+                    Text(
+                      "Edit",
+                      style: TextStyle(
+                          color: Color(0xff6E4CFE),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  // Get.toNamed("book");
+                },
+                child: tile(
+                    Icon(Icons.favorite_border,
+                        color: Colors.black, size: 15.sp),
+                    "Your favorite",
+                    "Recorder your favorite service in a click"),
+              ),
+              InkWell(
+                onTap: () {
+                  Get.toNamed("payment");
+                },
+                child: tile(
+                    Icon(Icons.payment, color: Colors.black, size: 15.sp),
+                    "Payment",
+                    "Payment methods, Transaction History"),
+              ),
+              InkWell(
+                onTap: () {
+                  Get.toNamed("showaddress", arguments: "save");
+                },
+                child: tile(
+                    Icon(Icons.note_alt_outlined,
+                        color: Colors.black, size: 15.sp),
+                    "Manage Address",
+                    ""),
+              ),
+              InkWell(
+                onTap: () {
+                  Get.toNamed("book");
+                },
+                child: tile(Icon(Icons.list, color: Colors.black, size: 15.sp),
+                    "Your Booking", "View your past and upcoming booking"),
+              ),
+              tile(
+                  Icon(Icons.notifications_outlined,
+                      color: Colors.black, size: 15.sp),
+                  "Notification",
+                  "View your past notification"),
+              tile(
+                  Icon(Icons.work_outline, color: Colors.black, size: 15.sp),
+                  "Register as partner",
+                  "Want to list your service? Register with us"),
+              tile(Icon(Icons.error_outline, color: Colors.black, size: 15.sp),
+                  "About", "Privacy Policy, Terms of Services, Licenses"),
+              InkWell(
+                onTap: () {
+                  Get.bottomSheet(
+                    // enableDrag: false,
+                    isDismissible: false,
+                    Container(
+                      color: Colors.white,
+                      height: 20.h,
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      alignment: Alignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Logout?",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.bold)),
+                              InkWell(
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: Icon(Icons.close,
+                                    size: 15.sp,
+                                    color: Colors.black,
+                                    weight: 100),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text("Are you sure want to logout from the app?",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: Container(
+                                  height: 5.h,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8.sp),
+                                      color: Colors.white,
+                                      border:
+                                          Border.all(color: Color(0xff6E4CFE))),
+                                  width: 35.w,
+                                  alignment: Alignment.center,
+                                  child: Text("Cancel",
+                                      style: TextStyle(
+                                          color: Color(0xff6E4CFE),
+                                          fontSize: 12.sp)),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              InkWell(
+                                onTap: () {
+                                  Firebasehelper.helper.logout();
+                                },
+                                child: Container(
+                                  height: 5.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.sp),
+                                    color: Colors.red.shade600,
+                                  ),
+                                  width: 45.w,
+                                  alignment: Alignment.center,
+                                  child: Text("Logout",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                  // print("logout========");
+                },
+                child: tile(
+                    Icon(Icons.login, color: Colors.red.shade600, size: 18.sp),
+                    "Logout",
+                    ""),
+              ),
+            ],
+          ),
+        ),
+        key: key,
         body: Stack(
           alignment: Alignment(0, 0.9),
           children: [
@@ -104,7 +318,8 @@ class _HomescreenState extends State<Homescreen> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  Get.toNamed("dash");
+                                  // Get.toNamed("setting");
+                                  key.currentState!.openDrawer();
                                 },
                                 child: CircleAvatar(
                                     radius: 15.sp,
@@ -119,12 +334,15 @@ class _HomescreenState extends State<Homescreen> {
                                 child: Row(
                                   children: [
                                     Obx(
-                                      () => Text(
-                                        "${map.place.value.locality},${map.place.value.country}",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 15.sp),
+                                      () => Container(
+                                        width: 35.w,
+                                        child: Text(
+                                          "${map.place.value.locality},${map.place.value.country}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 15.sp),
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 5),
@@ -533,4 +751,31 @@ class _HomescreenState extends State<Homescreen> {
       ),
     );
   }
+}
+
+Padding tile(Icon i, String title, String subtitle) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 2.0),
+    child: Column(
+      children: [
+        ListTile(
+          title: Text(
+            "$title",
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 10.sp,
+                color: title == 'Logout' ? Colors.red.shade600 : Colors.black),
+          ),
+          minLeadingWidth: 5.w,
+          trailing: Icon(Icons.arrow_forward_ios,
+              size: 10.sp,
+              color: title == 'Logout' ? Colors.red.shade600 : Colors.black),
+          leading: i,
+          // subtitle: Text("$subtitle"),
+        ),
+        const SizedBox(height: 5),
+        Divider(height: 1, color: Colors.grey.shade200, thickness: 2),
+      ],
+    ),
+  );
 }

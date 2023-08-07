@@ -21,7 +21,7 @@ class _PaymentscreenState extends State<Paymentscreen> {
               const SizedBox(height: 20),
               InkWell(
                   onTap: () {
-                    Get.offAllNamed("dash");
+                    Get.back();
                   },
                   child: Icon(Icons.close, color: Colors.black, size: 18.sp)),
               const SizedBox(height: 15),
@@ -41,7 +41,8 @@ class _PaymentscreenState extends State<Paymentscreen> {
                         color: Colors.black,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400),
-                  ),minLeadingWidth: 5.w),
+                  ),
+                  minLeadingWidth: 5.w),
             ],
             crossAxisAlignment: CrossAxisAlignment.start,
           ),

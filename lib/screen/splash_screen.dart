@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:home_saloon/screen/map_screen/map_controller.dart';
 import 'package:home_saloon/utils/firebase_helper.dart';

@@ -101,4 +101,19 @@ class Firebasedata {
   {
     fire.collection("user").doc("${user['uid']}").collection("myaddress").doc("${id}").delete();
   }
+
+
+  void update_Address(Addressmodal modal,String uid)
+  {
+    fire.collection("user").doc("${uid}").collection("myaddress").doc("${modal.id}").set({
+      "first name":modal.first,
+      "last name":modal.last,
+      "phone number":modal.number,
+      "house flat no":modal.house,
+      "pincode":modal.pincode,
+      "residency name":modal.residency,
+      "city":modal.city,
+      "state":modal.state,
+    });
+  }
 }

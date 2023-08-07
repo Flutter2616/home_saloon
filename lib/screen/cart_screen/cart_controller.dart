@@ -4,6 +4,7 @@ import 'package:home_saloon/screen/homescreen/service_modal.dart';
 
 class Cartcontroller extends GetxController {
   RxInt total_order_price =0.obs;
+  RxString selectaddress="".obs;
 //0xff6E4CFE
   List<Cartmodal> cartlist = [];
   RxString selecttime="".obs;
