@@ -63,6 +63,7 @@ class Firebasedata {
       "description": modal.desc,
       "offer": modal.offer,
       "gender": modal.gender,
+      "address":modal.address,
       "qty": modal.qty,
       "servicetime": modal.servicetime,
       "status": modal.status,
@@ -78,6 +79,23 @@ class Firebasedata {
         .delete();
   }
 
+  void buycart(Cartmodal modal,String uid)
+  {
+    fire.collection("user").doc("${uid}").collection("buycart").add({
+      "detail": modal.name,
+      "img":
+      "https://img.freepik.com/free-photo/handsome-man-barber-shop-styling-hair_1303-20978.jpg",
+      "type": modal.type,
+      "price": modal.price,
+      "time": modal.time,
+      "description": modal.desc,
+      "offer": modal.offer,
+      "qty": modal.qty,
+      "gender": modal.gender,
+      "status":modal.status,
+      "address":modal.address,"servicetime":modal.servicetime,
+    });
+  }
   //======================================address fire store=========================
   void add_Address(String uid,Addressmodal modal) {
     fire.collection("user").doc("${uid}").collection("myaddress").add({
