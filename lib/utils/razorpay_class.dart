@@ -33,7 +33,13 @@ class PaymentHelper {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     for (var x in cart.cartlist) {
       Cartmodal modal = Cartmodal(
-        address: x.address,
+        address: {
+          "name": "${cart.modal!.last} ${cart.modal!.last}",
+          "phonenumber": "${cart.modal!.number}",
+          "pincode": "${cart.modal!.pincode}",
+          "address":
+              "${cart.modal!.house},${cart.modal!.residency},${cart.modal!.city},${cart.modal!.state}"
+        },
         servicetime: x.servicetime,
         desc: x.desc,
         price: x.price,

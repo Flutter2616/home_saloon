@@ -81,8 +81,8 @@ class _ShowAddressState extends State<ShowAddress> {
                             .asMap()
                             .entries
                             .map((e) => view_address(e.key))
-                            .toList(),);
-
+                            .toList(),
+                      );
                     }
                     return LoadingAnimationWidget.hexagonDots(
                         color: Color(0xff451cf1), size: 30.sp);
@@ -191,7 +191,8 @@ class _ShowAddressState extends State<ShowAddress> {
                             Spacer(),
                             InkWell(
                               onTap: () {
-                                PaymentHelper.payment.setPayment(cart.total_order_price.value.toDouble());
+                                PaymentHelper.payment.setPayment(
+                                    cart.total_order_price.value.toDouble());
                               },
                               child: Text(
                                 "Payment",
@@ -227,38 +228,29 @@ class _ShowAddressState extends State<ShowAddress> {
             trailing: Visibility(
               visible: status == "select" ? true : false,
               child: Obx(
-                () => Radio(
-                  activeColor: Color(0xff6E4CFE),
-                  value: "${address.addresslist[index].id}",
-                  groupValue: cart.selectaddress.value,
-                  onChanged: (value) {
-                    cart.selectaddress.value = value!;
-                    for (var x in cart.cartlist) {
-                      Cartmodal modal = Cartmodal(
-                          offer: x.offer,
-                          img: x.img,
-                          type: x.type,
-                          id: x.id,
-                          qty: x.qty,
-                          name: x.name,
-                          gender: x.gender,
-                          time: x.time,
-                          price: x.price,
-                          desc: x.desc,
-                          servicetime: cart.selecttime.value,
-                          address: {
-                            "name":
-                                "${address.addresslist[index].first} ${address.addresslist[index].first}",
-                            "phonenumber":
-                                "${address.addresslist[index].number}",
-                            "pincode": "${address.addresslist[index].pincode}",
-                            "address":
-                                "${address.addresslist[index].house},${address.addresslist[index].residency},${address.addresslist[index].city},${address.addresslist[index].state}"
-                          });
-                      Firebasedata.data.update_Cart(modal);
-                    }
-                  },
-                ),
+                    () =>
+                    Radio(
+                      activeColor: Color(0xff6E4CFE),
+                      value: "${address.addresslist[index].id}",
+                      groupValue: cart.selectaddress.value,
+                      onChanged: (value) {
+                        cart.selectaddress.value = value!;
+                        for (var x in address.addresslist) {
+                          if (cart.selectaddress.value == x.id) {
+                            cart.modal = Addressmodal(
+                                number: x.number,
+                                city: x.city,
+                                first: x.first,
+                                last: x.last,
+                                house: x.house,
+                                pincode: x.pincode,
+                                residency: x.residency,
+                                state: x.state
+                            );
+                          }
+                      }
+                      },
+                    ),
               ),
             ),
             leading: CircleAvatar(
@@ -272,7 +264,8 @@ class _ShowAddressState extends State<ShowAddress> {
             title: Text(
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                "${address.addresslist[index].first} ${address.addresslist[index].last}",
+                "${address.addresslist[index].first} ${address
+                    .addresslist[index].last}",
                 style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w500,
@@ -280,7 +273,10 @@ class _ShowAddressState extends State<ShowAddress> {
             subtitle: Text(
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                "${address.addresslist[index].pincode},${address.addresslist[index].house},${address.addresslist[index].residency},${address.addresslist[index].city},${address.addresslist[index].state}",
+                "${address.addresslist[index].pincode},${address
+                    .addresslist[index].house},${address.addresslist[index]
+                    .residency},${address.addresslist[index].city},${address
+                    .addresslist[index].state}",
                 style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
@@ -297,7 +293,7 @@ class _ShowAddressState extends State<ShowAddress> {
                 },
                 child: Text("Delete",
                     style:
-                        TextStyle(fontSize: 12.sp, color: Color(0xff6E4CFE))),
+                    TextStyle(fontSize: 12.sp, color: Color(0xff6E4CFE))),
               ),
               InkWell(
                 onTap: () {
@@ -306,7 +302,7 @@ class _ShowAddressState extends State<ShowAddress> {
                 },
                 child: Text("Edit",
                     style:
-                        TextStyle(fontSize: 12.sp, color: Color(0xff6E4CFE))),
+                    TextStyle(fontSize: 12.sp, color: Color(0xff6E4CFE))),
               ),
             ],
           ),

@@ -96,6 +96,11 @@ class Firebasedata {
       "address":modal.address,"servicetime":modal.servicetime,
     });
   }
+  
+  void buy_read(String uid,String status)
+  {
+    fire.collection("user").doc("${uid}").collection("buycart").where("status",isEqualTo: "$status");
+  }
   //======================================address fire store=========================
   void add_Address(String uid,Addressmodal modal) {
     fire.collection("user").doc("${uid}").collection("myaddress").add({
