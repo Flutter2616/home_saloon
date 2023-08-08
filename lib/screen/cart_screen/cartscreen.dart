@@ -268,7 +268,10 @@ class _CartscreenState extends State<Cartscreen> {
                                                         children: [
                                                           InkWell(
                                                             onTap: () {
-                                                              if (cart.cartlist[e.key].qty! <
+                                                              if (cart
+                                                                      .cartlist[
+                                                                          e.key]
+                                                                      .qty! <
                                                                   2) {
                                                                 Firebasedata
                                                                     .data
@@ -537,54 +540,96 @@ class _CartscreenState extends State<Cartscreen> {
                 const SizedBox(height: 20),
                 Divider(height: 1, color: Colors.grey.shade200, thickness: 5),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("item total",
-                        style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black)),
-                    Text("\$${cart.total_order_price.value}",
-                        style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black)),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Coupan Discount",
-                        style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black)),
-                    Text("-\$0",
-                        style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.green.shade700)),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Divider(height: 1, color: Colors.grey.shade200, thickness: 1),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Amount Payable",
-                        style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black)),
-                    Text("\$${cart.total_order_price}",
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black)),
-                  ],
+                StreamBuilder(
+                  stream: Firebasedata.data.cart_Read(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text("${snapshot.error}"),
+                      );
+                    } else if (snapshot.hasData) {
+                      QuerySnapshot qs = snapshot.data!;
+                      // print("querydata: ${qs.docs.length}");
+                      List<QueryDocumentSnapshot> querylist = qs.docs;
+                      Map m1 = {};
+                      cart.total_order_price.value = 0;
+                      for (var x in querylist) {
+                        String id = x.id;
+                        m1 = x.data() as Map;
+                        Cartmodal modal = Cartmodal(
+                          type: m1['type'],
+                          img: m1['img'],
+                          id: id,
+                          offer: m1['offer'],
+                          price: m1['price'],
+                          desc: m1['desc'],
+                          time: m1['time'],
+                          gender: m1['gender'],
+                          name: m1['detail'],
+                          qty: m1['qty'],
+                        );
+                        cart.total_order_price = (cart.total_order_price +
+                            (m1['price'] * m1['qty'])) as RxInt;
+                      }
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("item total",
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black)),
+                              Text("\$${cart.total_order_price.value}",
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black)),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Coupan Discount",
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black)),
+                              Text("-\$0",
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.green.shade700)),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Divider(
+                              height: 1,
+                              color: Colors.grey.shade200,
+                              thickness: 1),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Amount Payable",
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black)),
+                              Text("\$${cart.total_order_price}",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black)),
+                            ],
+                          ),
+                        ],
+                      );
+                    }
+                    return Container();
+                  },
                 ),
                 const SizedBox(height: 20),
                 StreamBuilder(
@@ -691,8 +736,19 @@ class _CartscreenState extends State<Cartscreen> {
                                         );
                                         Firebasedata.data.update_Cart(modal);
                                       }
-                                      Get.toNamed("showaddress",arguments: "select");
-                                      // PaymentHelper.payment.setPayment(cart.total_order_price.value.toDouble());
+                                      if (cart.selecttime.value != null) {
+                                        Get.toNamed("showaddress",
+                                            arguments: "select");
+                                      } else {
+                                        Get.showSnackbar(GetSnackBar(
+                                          borderRadius: 5.sp,margin: EdgeInsets.all(10),
+                                          message: "Plese select time",
+                                          backgroundColor: Color(0xff6E4CFE),
+                                          duration: Duration(seconds: 3),
+                                          isDismissible: true,
+                                          snackPosition: SnackPosition.TOP,
+                                        ));
+                                      }
                                     },
                                     child: Text(
                                       "Set Address",

@@ -55,6 +55,7 @@ class PaymentHelper {
       Firebasedata.data.buycart(modal, "${user['uid']}");
       Firebasedata.data.delete_cart("${x.id}");
     }
+    cart.selecttime.value='';
     Get.offAllNamed('home');
   }
 

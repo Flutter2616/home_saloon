@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_saloon/screen/booking_screen/book_controller.dart';
+import 'package:home_saloon/screen/booking_screen/view_booking_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class Bookscreen extends StatefulWidget {
@@ -12,11 +13,16 @@ class Bookscreen extends StatefulWidget {
 
 //0xff6E4CFE
 class _BookscreenState extends State<Bookscreen> {
-  Bookcontroller book=Get.put(Bookcontroller());
+  Bookcontroller book = Get.put(Bookcontroller());
+@override
+  void initState() {
+    super.initState();
+    book.tab.value='complate';
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           leading: InkWell(
@@ -27,16 +33,14 @@ class _BookscreenState extends State<Bookscreen> {
           backgroundColor: Colors.white,
           elevation: 1,
           bottom: TabBar(
+            isScrollable: false,
             onTap: (value) {
-              print("value:==$value");
-              if(value==0)
-                {
-                  book.tab.value=="complate";
-                }
-              else if(value==1)
-                {
-                  book.tab.value="pending";
-                }
+              // print("value:==$value");
+              if (value == 0) {
+                book.tab.value = "complate";
+              } else if (value == 1) {
+                book.tab.value = "pending";
+              }
               print("tab value:==${book.tab.value}");
             },
             physics: NeverScrollableScrollPhysics(),
@@ -55,7 +59,6 @@ class _BookscreenState extends State<Bookscreen> {
             tabs: [
               Tab(text: "Past"),
               Tab(text: "Upcoming"),
-              Tab(text: "Favorite"),
             ],
           ),
           title: Text(
@@ -65,6 +68,13 @@ class _BookscreenState extends State<Bookscreen> {
                 fontWeight: FontWeight.w600,
                 color: Colors.black),
           ),
+        ),
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            ViewBookingScreen(),
+            ViewBookingScreen(),
+          ],
         ),
       ),
     );

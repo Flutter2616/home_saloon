@@ -27,7 +27,6 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  TextEditingController txtsearch = TextEditingController();
   Homecontroller controller = Get.put(Homecontroller());
   Mapcontroller map = Get.put(Mapcontroller());
   Cartcontroller cart = Get.put(Cartcontroller());
@@ -54,7 +53,7 @@ class _HomescreenState extends State<Homescreen> {
     map.placemark.value = placemark;
     map.place.value = map.placemark[0];
 
-    print("===================== ${map.place}");
+    // print("===================== ${map.place}");
   }
 
   @override
@@ -86,10 +85,15 @@ class _HomescreenState extends State<Homescreen> {
                         setting.path.value = image!.path;
                       },
                       child: Obx(
-                        () => CircleAvatar(
-                            radius: 15.sp,
-                            backgroundImage:
-                                FileImage(File("${setting.path.value}"))),
+                        () => setting.path.value.isEmpty
+                            ? CircleAvatar(
+                                radius: 15.sp,backgroundColor: Colors.black,
+                                backgroundImage:
+                                    AssetImage("assets/images/profile.png"))
+                            : CircleAvatar(
+                                radius: 15.sp,backgroundColor: Colors.black,
+                                backgroundImage:
+                                    FileImage(File("${setting.path.value}"))),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -238,6 +242,7 @@ class _HomescreenState extends State<Homescreen> {
                               InkWell(
                                 onTap: () {
                                   Firebasehelper.helper.logout();
+                                  Get.offAllNamed("login");
                                 },
                                 child: Container(
                                   height: 5.h,
@@ -308,160 +313,174 @@ class _HomescreenState extends State<Homescreen> {
                     controller.alllist.add(modal);
                   }
                   return SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  // Get.toNamed("setting");
-                                  key.currentState!.openDrawer();
-                                },
-                                child: CircleAvatar(
-                                    radius: 15.sp,
-                                    backgroundImage:
-                                        AssetImage("assets/intro/bg1.png")),
-                              ),
-                              const SizedBox(width: 5),
-                              InkWell(
-                                onTap: () {
-                                  Get.toNamed("map");
-                                },
-                                child: Row(
-                                  children: [
-                                    Obx(
-                                      () => Container(
-                                        width: 35.w,
-                                        child: Text(
-                                          "${map.place.value.locality},${map.place.value.country}",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 15.sp),
+                    child: Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    // Get.toNamed("setting");
+                                    key.currentState!.openDrawer();
+                                  },
+                                  child: setting.path.isNotEmpty?Obx(
+                                    () => CircleAvatar(
+                                        radius: 15.sp,backgroundColor: Colors.black,
+                                        backgroundImage:
+                                        FileImage(File("${setting.path.value}"))),
+                                  ):CircleAvatar(
+                                      radius: 15.sp,backgroundColor: Colors.black,
+                                      backgroundImage:
+                                          AssetImage("assets/images/profile.png")),
+                                ),
+                                const SizedBox(width: 5),
+                                InkWell(
+                                  onTap: () {
+                                    Get.toNamed("map");
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Obx(
+                                        () => Container(
+                                          width: 35.w,
+                                          child: Text(
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            "${map.place.value.locality},${map.place.value.country}",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 15.sp),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Icon(Icons.keyboard_arrow_down_outlined,
-                                        color: Colors.black, size: 15.sp),
-                                  ],
+                                      const SizedBox(width: 5),
+                                      Icon(Icons.keyboard_arrow_down_outlined,
+                                          color: Colors.black, size: 15.sp),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Spacer(),
-                              IconButton(
-                                  onPressed: () {
-                                    Get.toNamed("cart");
-                                  },
-                                  icon: Icon(Icons.shopping_cart_outlined,
-                                      color: Colors.black, size: 20.sp)),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        Container(
-                          height: 5.h,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.sp),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 5,
-                                    spreadRadius: 3,
-                                    offset: Offset(0, 3))
+                                Spacer(),
+                                IconButton(
+                                    onPressed: () {
+                                      Get.toNamed("cart");
+                                    },
+                                    icon: Icon(Icons.shopping_cart_outlined,
+                                        color: Colors.black, size: 20.sp)),
                               ],
-                              color: Colors.white),
-                          padding: EdgeInsets.all(5),
-                          alignment: Alignment.bottomCenter,
-                          child: TextField(
-                              style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400),
-                              cursorColor: Color(0xff6E4CFE),
-                              controller: txtsearch,
-                              decoration: InputDecoration(
-                                  hintText: "Search service",
-                                  hintStyle: TextStyle(
-                                      letterSpacing: 1,
-                                      color: Colors.grey.shade500,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 13.sp),
-                                  border: InputBorder.none,
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                    size: 15.sp,
-                                    color: Color(0xff6E4CFE),
-                                  ))),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 15),
-                              title("Beauty services"),
-                              const SizedBox(height: 15),
-                              SizedBox(
-                                height: 30.h,
-                                child: GridView(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 5,
-                                          mainAxisSpacing: 5),
-                                  children: [
-                                    servicetype("Haircut",
-                                        "https://www.bonneviesalon.com/wp-content/uploads/2020/10/Mens-Haircuts-Orlando.jpg"),
-                                    servicetype("Facecare",
-                                        "https://www.rd.com/wp-content/uploads/2017/04/ft-Grooming-Treatments-Every-Man-Should-Be-Getting.jpg"),
-                                    servicetype("Shaving",
-                                        "https://img.freepik.com/premium-photo/young-man-shaving-with-straight-edge-razor-by-hairdresser-barbershop_359687-547.jpg"),
-                                    servicetype("Massage",
-                                        "https://www.evobee.com/uploads/products/image/d8877e901460e116efee7b568f0d5580.jpg"),
-                                    servicetype("Haircare",
-                                        "https://www.refinesalons.com/wp-content/uploads/2021/12/scalp-treatment-1.jpg"),
-                                    servicetype("Haircolor",
-                                        "https://www.bonneviesalon.com/wp-content/uploads/2020/10/Mens-Haircuts-Orlando.jpg"),
-                                  ],
-                                  physics: NeverScrollableScrollPhysics(),
-                                ),
-                              ),
-                              title("Popular Package for you"),
-                              const SizedBox(height: 15),
-                              SizedBox(
-                                height: 35.h,
-                                child: ListView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return service(
-                                        controller.packagelist[index], null);
-                                  },
-                                  itemCount: controller.packagelist.length,
-                                ),
-                              ),
-                              title("Best Offers"),
-                              const SizedBox(height: 15),
-                              SizedBox(
-                                height: 35.h,
-                                child: ListView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return service(controller.offerlist[index],
-                                        controller.offerlist[index].offer);
-                                  },
-                                  itemCount: controller.offerlist.length,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        )
-                      ],
+                          const SizedBox(height: 15),
+                          Container(
+                            height: 5.h,
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.sp),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey.shade300,
+                                      blurRadius: 5,
+                                      spreadRadius: 3,
+                                      offset: Offset(0, 3))
+                                ],
+                                color: Colors.white),
+                            padding: EdgeInsets.all(5),
+                            alignment: Alignment.bottomCenter,
+                            child: TextField(
+                              onTap: () {
+                                Get.toNamed("search");
+                              },onChanged: (value) {
+
+                              },
+                                style: TextStyle(
+                                    fontSize: 13.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400),
+                                cursorColor: Color(0xff6E4CFE),
+                                // controller: txtsearch,
+                                decoration: InputDecoration(
+                                    hintText: "Search service",
+                                    hintStyle: TextStyle(
+                                        letterSpacing: 1,
+                                        color: Colors.grey.shade500,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13.sp),
+                                    border: InputBorder.none,
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      size: 15.sp,
+                                      color: Color(0xff6E4CFE),
+                                    ))),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 15),
+                                title("Beauty services"),
+                                const SizedBox(height: 15),
+                                SizedBox(
+                                  height: 30.h,
+                                  child: GridView(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            crossAxisSpacing: 5,
+                                            mainAxisSpacing: 5),
+                                    children: [
+                                      servicetype("Haircut",
+                                          "https://www.bonneviesalon.com/wp-content/uploads/2020/10/Mens-Haircuts-Orlando.jpg"),
+                                      servicetype("Facecare",
+                                          "https://www.rd.com/wp-content/uploads/2017/04/ft-Grooming-Treatments-Every-Man-Should-Be-Getting.jpg"),
+                                      servicetype("Shaving",
+                                          "https://img.freepik.com/premium-photo/young-man-shaving-with-straight-edge-razor-by-hairdresser-barbershop_359687-547.jpg"),
+                                      servicetype("Massage",
+                                          "https://www.evobee.com/uploads/products/image/d8877e901460e116efee7b568f0d5580.jpg"),
+                                      servicetype("Haircare",
+                                          "https://www.refinesalons.com/wp-content/uploads/2021/12/scalp-treatment-1.jpg"),
+                                      servicetype("Haircolor",
+                                          "https://www.bonneviesalon.com/wp-content/uploads/2020/10/Mens-Haircuts-Orlando.jpg"),
+                                    ],
+                                    physics: NeverScrollableScrollPhysics(),
+                                  ),
+                                ),
+                                title("Popular Package for you"),
+                                const SizedBox(height: 15),
+                                SizedBox(
+                                  height: 35.h,
+                                  child: ListView.builder(
+                                    physics: BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return service(
+                                          controller.packagelist[index], null);
+                                    },
+                                    itemCount: controller.packagelist.length,
+                                  ),
+                                ),
+                                title("Best Offers"),
+                                const SizedBox(height: 15),
+                                SizedBox(
+                                  height: 35.h,
+                                  child: ListView.builder(
+                                    physics: BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return service(controller.offerlist[index],
+                                          controller.offerlist[index].offer);
+                                    },
+                                    itemCount: controller.offerlist.length,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }

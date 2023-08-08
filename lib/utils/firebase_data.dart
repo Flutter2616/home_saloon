@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:home_saloon/screen/address_screen/address_modal.dart';
 import 'package:home_saloon/screen/cart_screen/cart_modal.dart';
 import 'package:home_saloon/screen/homescreen/service_modal.dart';
+import 'package:home_saloon/screen/payment_screen/payment_modal.dart';
 
 import '../screen/homescreen/home_screen.dart';
 
@@ -63,7 +64,7 @@ class Firebasedata {
       "description": modal.desc,
       "offer": modal.offer,
       "gender": modal.gender,
-      "address":modal.address,
+      "address": modal.address,
       "qty": modal.qty,
       "servicetime": modal.servicetime,
       "status": modal.status,
@@ -79,12 +80,11 @@ class Firebasedata {
         .delete();
   }
 
-  void buycart(Cartmodal modal,String uid)
-  {
+  void buycart(Cartmodal modal, String uid) {
     fire.collection("user").doc("${uid}").collection("buycart").add({
       "detail": modal.name,
       "img":
-      "https://img.freepik.com/free-photo/handsome-man-barber-shop-styling-hair_1303-20978.jpg",
+          "https://img.freepik.com/free-photo/handsome-man-barber-shop-styling-hair_1303-20978.jpg",
       "type": modal.type,
       "price": modal.price,
       "time": modal.time,
@@ -92,51 +92,89 @@ class Firebasedata {
       "offer": modal.offer,
       "qty": modal.qty,
       "gender": modal.gender,
-      "status":modal.status,
-      "address":modal.address,"servicetime":modal.servicetime,
+      "status": modal.status,
+      "address": modal.address,
+      "servicetime": modal.servicetime,
     });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> buy_read(
+      String uid, String status) {
+    return fire
+        .collection("user")
+        .doc("${uid}")
+        .collection("buycart")
+        .where("status", isEqualTo: "$status")
+        .snapshots();
   }
   
-  void buy_read(String uid,String status)
+  void delete_buy(String uid,String id)
   {
-    fire.collection("user").doc("${uid}").collection("buycart").where("status",isEqualTo: "$status");
+    fire.collection("user").doc("${uid}").collection("buycart").doc("$id").delete();
   }
+
   //======================================address fire store=========================
-  void add_Address(String uid,Addressmodal modal) {
+  void add_Address(String uid, Addressmodal modal) {
     fire.collection("user").doc("${uid}").collection("myaddress").add({
-      "first name":modal.first,
-      "last name":modal.last,
-      "phone number":modal.number,
-      "house flat no":modal.house,
-      "pincode":modal.pincode,
-      "residency name":modal.residency,
-      "city":modal.city,
-      "state":modal.state,
+      "first name": modal.first,
+      "last name": modal.last,
+      "phone number": modal.number,
+      "house flat no": modal.house,
+      "pincode": modal.pincode,
+      "residency name": modal.residency,
+      "city": modal.city,
+      "state": modal.state,
     });
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> read_address()
-  {
-    return fire.collection("user").doc("${user['uid']}").collection("myaddress").snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> read_address() {
+    return fire
+        .collection("user")
+        .doc("${user['uid']}")
+        .collection("myaddress")
+        .snapshots();
   }
 
-  void delete_Address(String id)
-  {
-    fire.collection("user").doc("${user['uid']}").collection("myaddress").doc("${id}").delete();
+  void delete_Address(String id) {
+    fire
+        .collection("user")
+        .doc("${user['uid']}")
+        .collection("myaddress")
+        .doc("${id}")
+        .delete();
   }
 
-
-  void update_Address(Addressmodal modal,String uid)
-  {
-    fire.collection("user").doc("${uid}").collection("myaddress").doc("${modal.id}").set({
-      "first name":modal.first,
-      "last name":modal.last,
-      "phone number":modal.number,
-      "house flat no":modal.house,
-      "pincode":modal.pincode,
-      "residency name":modal.residency,
-      "city":modal.city,
-      "state":modal.state,
+  void update_Address(Addressmodal modal, String uid) {
+    fire
+        .collection("user")
+        .doc("${uid}")
+        .collection("myaddress")
+        .doc("${modal.id}")
+        .set({
+      "first name": modal.first,
+      "last name": modal.last,
+      "phone number": modal.number,
+      "house flat no": modal.house,
+      "pincode": modal.pincode,
+      "residency name": modal.residency,
+      "city": modal.city,
+      "state": modal.state,
     });
+  }
+
+  //============add payment card============
+
+  void add_Card(Paymentmodal modal, String uid) {
+    fire.collection("user").doc("$uid").collection("mycard").add({
+      "cardnumber": modal.cardnumber,
+      "cardname": modal.cardname,
+      "carddate": modal.carddate,
+      "cardcvv": modal.cardcvv
+    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> card_read(String uid)
+  {
+    return fire.collection("user").doc("$uid").collection("mycard").snapshots();
   }
 }

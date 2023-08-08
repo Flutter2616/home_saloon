@@ -103,111 +103,113 @@ class _ShowAddressState extends State<ShowAddress> {
                           fontWeight: FontWeight.w400),
                     ),
                     minLeadingWidth: 5.w),
-                StreamBuilder(
-                  stream: Firebasedata.data.cart_Read(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text("${snapshot.error}"),
-                      );
-                    } else if (snapshot.hasData) {
-                      QuerySnapshot qs = snapshot.data!;
-                      // print("querydata: ${qs.docs.length}");
-                      List<QueryDocumentSnapshot> querylist = qs.docs;
-                      Map m1 = {};
-                      cart.total_order_price.value = 0;
-                      cart.cartlist.clear();
-                      for (var x in querylist) {
-                        String id = x.id;
-                        m1 = x.data() as Map;
-                        Cartmodal modal = Cartmodal(
-                          type: m1['type'],
-                          img: m1['img'],
-                          id: id,
-                          offer: m1['offer'],
-                          price: m1['price'],
-                          desc: m1['desc'],
-                          time: m1['time'],
-                          gender: m1['gender'],
-                          name: m1['detail'],
-                          qty: m1['qty'],
+                Visibility(visible: status=='select'?true:false,
+                  child: StreamBuilder(
+                    stream: Firebasedata.data.cart_Read(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text("${snapshot.error}"),
                         );
-                        cart.total_order_price = (cart.total_order_price +
-                            (m1['price'] * m1['qty'])) as RxInt;
-                        cart.cartlist.add(modal);
-                      }
-                      return cart.cartlist.isEmpty
-                          ? Container()
-                          : Container(
-                        width: 100.w,
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.all(10),
-                        height: 7.h,
-                        decoration: BoxDecoration(
-                            color: Color(0xff6E4CFE),
-                            borderRadius: BorderRadius.circular(8.sp)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 0),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(5.sp),
-                                  border:
-                                  Border.all(color: Colors.white)),
-                              child: Text("${cart.cartlist.length}",
-                                  style: TextStyle(
-                                      fontSize: 15.sp,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500)),
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "\$${cart.total_order_price}",
+                      } else if (snapshot.hasData) {
+                        QuerySnapshot qs = snapshot.data!;
+                        // print("querydata: ${qs.docs.length}");
+                        List<QueryDocumentSnapshot> querylist = qs.docs;
+                        Map m1 = {};
+                        cart.total_order_price.value = 0;
+                        cart.cartlist.clear();
+                        for (var x in querylist) {
+                          String id = x.id;
+                          m1 = x.data() as Map;
+                          Cartmodal modal = Cartmodal(
+                            type: m1['type'],
+                            img: m1['img'],
+                            id: id,
+                            offer: m1['offer'],
+                            price: m1['price'],
+                            desc: m1['desc'],
+                            time: m1['time'],
+                            gender: m1['gender'],
+                            name: m1['detail'],
+                            qty: m1['qty'],
+                          );
+                          cart.total_order_price = (cart.total_order_price +
+                              (m1['price'] * m1['qty'])) as RxInt;
+                          cart.cartlist.add(modal);
+                        }
+                        return cart.cartlist.isEmpty
+                            ? Container()
+                            : Container(
+                          width: 100.w,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(10),
+                          height: 7.h,
+                          decoration: BoxDecoration(
+                              color: Color(0xff6E4CFE),
+                              borderRadius: BorderRadius.circular(8.sp)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 0),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(5.sp),
+                                    border:
+                                    Border.all(color: Colors.white)),
+                                child: Text("${cart.cartlist.length}",
+                                    style: TextStyle(
+                                        fontSize: 15.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500)),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "\$${cart.total_order_price}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                        fontSize: 12.sp),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "plus Taxes",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                        fontSize: 10.sp),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  PaymentHelper.payment.setPayment(
+                                      cart.total_order_price.value.toDouble());
+                                },
+                                child: Text(
+                                  "Payment",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       color: Colors.white,
-                                      fontSize: 12.sp),
+                                      fontSize: 13.sp),
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "plus Taxes",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                      fontSize: 10.sp),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            InkWell(
-                              onTap: () {
-                                PaymentHelper.payment.setPayment(
-                                    cart.total_order_price.value.toDouble());
-                              },
-                              child: Text(
-                                "Payment",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 13.sp),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
+                            ],
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
                 ),
               ],
             ),
